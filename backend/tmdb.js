@@ -65,8 +65,14 @@ async function generateRound() {
   const actor1Id = dData[Actor1Data].id
   console.log("Actor 1 Id: " + actor1Id)
   const actor1Image = await fetch("https://api.themoviedb.org/3/person/" + actor1Id + "/images&language=en-US&" + API_KEY)
-  console.log(actor1Image)
+  console.log("Image: " + actor1Image.json())
 
+  // if (actor1Image.json().profiles == 0)
+  // {
+  //     const actor1Tagged = await fetch("https://api.themoviedb.org/3/person/{person_id}" + actor1Id + "/tagged_images" + API_KEY)
+  //     const actor1TaggedJson = await actor1Tagged.json()
+      
+  // }
 
   // Log the movie
   console.log("Movie ID: " + movieID);
@@ -77,24 +83,26 @@ async function generateRound() {
 
   // Get movie Cast list data
   //https://api.themoviedb.org/3/movie/41154//credits?language=en-US&api_key=3e0d8b639ceb3235c21d5934466bb62e
-  const credRes = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '/credits?language=en-US&' + API_KEY)
+  const movieCredits = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '/credits?language=en-US&' + API_KEY)
   // Get Json
-  const credJson = await credRes.json()
+  const movieCreditsJson = await movieCredits.json()
 
   // Get movie Data
   const movieData = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '?language=en-US&' + API_KEY)
   const movieJson = await movieData.json()
   console.log("Adult film: " + movieJson.adult)
 
-  //while film is adult film or not english recall generate
+  // while film is adult film or not english recall generate
   console.log("Passed filter: " + filter(movieJson))
   if (filter(movieJson) == false) 
   {
     await generateRound()
   }
   
-  const cast = credJson.cast.slice(0, 4).filter((item) => item.name !== firstActorName)
+  // Select the top 5 actors in the movie that are not actor 1
+  const cast = movieCreditsJson.cast.slice(0, 4).filter((item) => item.name !== firstActorName)
 
+  // Get other actor
   const otherActor = cast[Math.floor(Math.random() * 3)];
   console.log("Actor 2: " + otherActor.name + " " + otherActor.popularity);
 
