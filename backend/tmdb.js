@@ -29,7 +29,7 @@ function movieOnly(item) {
 }
 
 
-async function generateRound() {
+export async function generateRound() {
   const page = Math.floor(Math.random() * 13) + 1
   console.log("page: " + page);
   const ares = await fetch("https://api.themoviedb.org/3/person/popular?language=en-US&page=" + page + "&" + API_KEY);

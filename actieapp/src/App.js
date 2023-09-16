@@ -2,22 +2,15 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const startGame = () => {
+    // write code that communicates with firebase to start the game.
+  }
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={startGame}>Start Game!</button>
     </div>
   );
 }
