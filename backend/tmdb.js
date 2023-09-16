@@ -19,13 +19,20 @@ function movieOnly(item) {
 }
 
 /**
- * 
+ * Filters for Adult, English, 
  * @param {*} item movieDataJson
  * @returns true if is adult film
  */
-function isAdult(item) {
-  return (item.cast[0].adult)
+function filter(item) {
+  adult =  (item.adult)
+  if (item.original_language == "en")
+  {
+    english = true
+  }
+  return (!adult && english)
 }
+
+
 
 async function generateRound() {
   // Search random actor popular page
@@ -51,8 +58,10 @@ async function generateRound() {
 
   // Get Actor Image
   const actor1Id = dData[Actor1Data].id
-  console.log("Actor Id: " + actor1Id)
-  
+  console.log("Actor 1 Id: " + actor1Id)
+  const actor1Image = await fetch("https://api.themoviedb.org/3/person/" + actor1Id + "/images&language=en-US&" + API_KEY)
+  console.log(actor1Image)
+
 
   // Log the movie
   console.log("Movie ID: " + movieID);
@@ -61,16 +70,20 @@ async function generateRound() {
   // Get the movie title
   const movieTitle = dData[Actor1Data].known_for[randMov].title
 
-  // Get movie data
+  // Get movie Cast list data
+  //https://api.themoviedb.org/3/movie/41154//credits?language=en-US&api_key=3e0d8b639ceb3235c21d5934466bb62e
   const credRes = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '/credits?language=en-US&' + API_KEY)
   // Get Json
   const credJson = await credRes.json()
 
-  // Adult film filter
-  const adultFilm = isAdult(credJson)
-  console.log(adultFilm)
+  // Get movie Data
+  const movieData = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '?language=en-US&' + API_KEY)
+  const movieJson = await movieData.json()
+  console.log("Adult film: " + movieJson.adult)
 
-  while (adultFilm == true) {
+  //while film is adult film or not english recall generate
+  while (filter(movieJson) == false) 
+  {
     generateRound()
   }
   
