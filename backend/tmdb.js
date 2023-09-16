@@ -4,9 +4,19 @@ const BASE_URL = "http://api.themoviedb.org/3/"
 const EDIT_URL = "person/3/movie_credits&"
 const API_URL = BASE_URL + EDIT_URL + API_KEY;
 
-const IMAGE_URL = "https://image.tmdb.org/t/p/original/"
+const IMAGE_URL = "https://image.tmdb.org/t/p/original"
 
+const dataArray = []
 
+/**
+ * Round object
+ * 
+ * @param {*} actor1Name 
+ * @param {*} actor1Image 
+ * @param {*} actor2Name 
+ * @param {*} actor2Image 
+ * @param {*} movieList 
+ */
 function Round(actor1Name, actor1Image, actor2Name, actor2Image, movieList) {
   this.actor1Name = actor1Name
   this.actor1Image = actor1Image
@@ -53,7 +63,6 @@ function filter(item) {
 async function generateRound() {
   // Search random actor popular page
   const page = Math.floor(Math.random() * 13) + 1
-  console.log("page: " + page);
 
   // Get actorData
   const actorResponse = await fetch("https://api.themoviedb.org/3/person/popular?language=en-US&page=" + page + "&" + API_KEY);
@@ -65,37 +74,25 @@ async function generateRound() {
 
   // Grab random movie from Actor's movie list
   const len = dData.length
-  const Actor1Data = Math.floor(Math.random() * len)
+  const actor1Data = Math.floor(Math.random() * len)
   const randMov = Math.floor(Math.random() * 3)
-  const movieID = dData[Actor1Data].known_for[randMov].id
+  const movieID = dData[actor1Data].known_for[randMov].id
 
   // Store the first actor
-  const firstActorName = dData[Actor1Data].name
+  const actor1Name = dData[actor1Data].name
 
   // Get Actor Image
-  const actor1Id = dData[Actor1Data].id
-  console.log("Actor 1 Id: " + actor1Id)
+  const actor1Id = dData[actor1Data].id
   
-  const actor1Image = await fetch("https://api.themoviedb.org/3/person" + actor1Id + "/images?language=en-US&" + API_KEY)
-  const actor1ImageJson = actor1Image.json()
-  console.log("Image: " + JSON.stringify(actor1ImageJson))
+  const actor1Image = await fetch("https://api.themoviedb.org/3/person/" + actor1Id + "/images?language=en-US&" + API_KEY)
+  const actor1ImageJson = await actor1Image.json()
 
-  // if (actor1Image.json().profiles == 0)
-  // {
-  //     const actor1Tagged = await fetch("https://api.themoviedb.org/3/person/" + actor1Id + "/tagged_images" + API_KEY)
-  //     const actor1TaggedJson = await actor1Tagged.json()
-      
-  // }
-
-  // Log the movie
-  console.log("Movie ID: " + movieID);
-  console.log("Actor 1: " + dData[Actor1Data].name + " " + dData[Actor1Data].popularity);
-
-  // Get the movie title
-  const movieTitle = dData[Actor1Data].known_for[randMov].title
-
+  const actor1ImageArray = actor1ImageJson.profiles
+  const actor1ImageListArray = []
+  for (const image of actor1ImageArray) {
+    actor1ImageListArray.push(IMAGE_URL + image.file_path)
+  }
   // Get movie Cast list data
-  //https://api.themoviedb.org/3/movie/41154//credits?language=en-US&api_key=3e0d8b639ceb3235c21d5934466bb62e
   const movieCredits = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '/credits?language=en-US&' + API_KEY)
   // Get Json
   const movieCreditsJson = await movieCredits.json()
@@ -103,73 +100,79 @@ async function generateRound() {
   // Get movie Data
   const movieData = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '?language=en-US&' + API_KEY)
   const movieJson = await movieData.json()
-  console.log("Adult film: " + movieJson.adult)
 
   // while film is adult film or not english recall generate
-  console.log("Passed filter: " + filter(movieJson))
   if (filter(movieJson) == false) 
   {
     await generateRound()
   }
   
   // Select the top 5 actors in the movie that are not actor 1
-  const cast = movieCreditsJson.cast.slice(0, 4).filter((item) => item.name !== firstActorName)
+  const cast = movieCreditsJson.cast.slice(0, 4).filter((item) => item.name !== actor1Name)
 
   // Get other actor
   const otherActor = cast[Math.floor(Math.random() * 3)];
-  console.log("Actor 2: " + otherActor.name + " " + otherActor.popularity);
+  const actor2Name = otherActor.name
   const actor2Id = otherActor.id
 
+  // Get actor2 image
+  const actor2Image = await fetch("https://api.themoviedb.org/3/person/" + actor2Id + "/images?language=en-US&" + API_KEY)
+  const actor2ImageJson = await actor2Image.json()
+
+  const actor2ImageArray = actor2ImageJson.profiles
+  const actor2ImageListArray = []
+  for (const image of actor2ImageArray) {
+    actor2ImageListArray.push(IMAGE_URL + image.file_path)
+  }
+
+
+
   // Movie Matching
-  const movieList1 = await fetch('https://api.themoviedb.org/3/person/' + actor1Id + "/movie_credits?language=en-US&" + API_KEY)
-  //console.log(JSON.stringify(movieList1.cast.original_title))
+  const movieList1 = await fetch("https://api.themoviedb.org/3/person/" + actor1Id + "/movie_credits?language=en-US&" + API_KEY)
   
-  const movieCast1 = movieList1
-  console.log(Object.keys(movieList1))
+  const movieList1Json = await movieList1.json();
 
+  const movieCast1 = movieList1Json.cast
 
-  // const movieListArray1 = [];
-  // for (const movie of movieCast1) {
-  //   movieListArray1.push(movie.original_title)
-  // }
+  const movieListArray1 = []
+  for (const movie of movieCast1) {
+    movieListArray1.push(movie.original_title)
+  }
+
+  const movieList2 = await fetch('https://api.themoviedb.org/3/person/' + actor2Id + '/movie_credits' + "?language=en-US&" + API_KEY)
+  const movieList2Json = await movieList2.json();
+
+  const movieCast2 = movieList2Json.cast
+
+  const movieListArray2 = []
+  for (const movie of movieCast2) {
+    movieListArray2.push(movie.original_title)
+  }
   
-  console.log(movieListArray1.toString())
+  const moviesShared = []
 
-  
+  const movieSet1 = new Set(movieListArray1)
 
-  movieList2 = await fetch('https://api.themoviedb.org/3/person/' + actor2Id + '/movie_credits' + "?language=en-US&" + API_KEY)
+  for (const element of movieListArray2)
+  {
+    if(movieSet1.has(element))
+    {
+      moviesShared.push(element)
+    }
+  }
 
-  moviesShared = {}
-  
-  // for (const element of movieList2)
-  // {
-  //   if(movieSet1.has(element))
-  //   {
-  //     moviesShared.push(element)
-  //   }
-  // }
-  
-  // if(input?.toLowerCase() === movieTitle.toLowerCase()) console.log("You got it!");
-  // else console.log("Ur stupid. The correct movie: " + movieTitle);
-  console.log(moviesShared)
-  console.log("The correct movie: " + movieTitle)
+  const roundData = new Round(actor1Name, actor1ImageListArray[0], actor2Name, actor2ImageListArray[0], moviesShared)
+  dataArray.push(roundData)
+
 
 }
+async function main() {
+  await generateRound();
+  console.log(dataArray);
+}
 
-generateRound();
+main();
 
-
-
-// const res = await fetch('https://api.themoviedb.org/3/person/3/movie_credits?language=en-US&api_key=3e0d8b639ceb3235c21d5934466bb62e')
-// // const formData = res.json();
-// const json = await res.json();
-// const desiredData = json.cast.filter((item) => item.popularity > 30)
-// // console.log(formData);
-// // console.log(desiredData[1]);
-// const len = desiredData.length
-// console.log(len);
-
-// console.log(desiredData[Actor1Data]);
 
 
 
