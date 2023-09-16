@@ -1,5 +1,8 @@
 import React, { useRef, useState } from 'react';
 import './App.css';
+import { generateRound } from './helpers/tmdb';
+import { useEffect } from 'react';
+import { createRoom, addUser, watchRoom } from './helpers/database';
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -7,7 +10,7 @@ import 'firebase/auth';
 import 'firebase/analytics';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useCollectionData, useDocument } from 'react-firebase-hooks/firestore';
 
 firebase.initializeApp({
   apiKey: "AIzaSyA4jmfcTas4pIrxMtjAcCsND8sNAo5I4Ek",
@@ -25,13 +28,12 @@ const analytics = firebase.analytics();
 
 
 function App() {
-
   const [user] = useAuthState(auth);
 
   return (
     <div className="App">
       <header>
-        <h1>⚛️🔥💬</h1>
+        <h1></h1>
         <SignOut />
       </header>
 
@@ -66,15 +68,37 @@ function SignOut() {
 }
 
 
+
+
 function ChatRoom() {
   const dummy = useRef();
   const messagesRef = firestore.collection('messages');
+  const gameRoomsRef = firestore.collection('gameRooms');
+  const usersRef = firestore.collection('users')
   const query = messagesRef.orderBy('createdAt').limit(25);
+  const gameRoomID = useRef("initial");
+  const gameData = useRef();
 
   const [messages] = useCollectionData(query, { idField: 'id' });
 
   const [formValue, setFormValue] = useState('');
 
+  const startGame = async (e) => {
+    e.preventDefault();
+
+    const roomID = await createRoom(gameRoomsRef);
+    gameRoomID.current = roomID;
+    console.log(gameRoomID.current);
+    gameRoomsRef.doc(roomID).onSnapshot((doc) => {
+      console.log("current data: " + doc.data())
+      gameData.current = doc.data();
+    })
+  }
+
+  useEffect(async () => {
+    console.log("Bouta get da document");
+    await addUser(usersRef, auth);
+  }, [])
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -103,10 +127,10 @@ function ChatRoom() {
 
     <form onSubmit={sendMessage}>
 
-      <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
+      <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type Here" />
 
-      <button type="submit" disabled={!formValue}>🕊️</button>
-
+      <button type="submit" disabled={!formValue}>Send</button>
+      <button onClick={startGame}>start game</button>
     </form>
   </>)
 }
