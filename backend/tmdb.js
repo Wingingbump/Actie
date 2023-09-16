@@ -1,3 +1,4 @@
+
 const API_KEY = "api_key=3e0d8b639ceb3235c21d5934466bb62e"
 const BASE_URL = "http://api.themoviedb.org/3/"
 const EDIT_URL = "person/3/movie_credits&"
@@ -28,6 +29,10 @@ function filter(item) {
   if (item.original_language == "en")
   {
     english = true
+  }
+  else
+  {
+    english = false
   }
   return (!adult && english)
 }
@@ -82,9 +87,10 @@ async function generateRound() {
   console.log("Adult film: " + movieJson.adult)
 
   //while film is adult film or not english recall generate
-  while (filter(movieJson) == false) 
+  console.log("Passed filter: " + filter(movieJson))
+  if (filter(movieJson) == false) 
   {
-    generateRound()
+    await generateRound()
   }
   
   const cast = credJson.cast.slice(0, 4).filter((item) => item.name !== firstActorName)
