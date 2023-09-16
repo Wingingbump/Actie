@@ -10,7 +10,13 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 firebase.initializeApp({
-  // your config
+  apiKey: "AIzaSyA4jmfcTas4pIrxMtjAcCsND8sNAo5I4Ek",
+  authDomain: "actiegame.firebaseapp.com",
+  projectId: "actiegame",
+  storageBucket: "actiegame.appspot.com",
+  messagingSenderId: "277824258246",
+  appId: "1:277824258246:web:3d8dc113a6366e81afd7c7",
+  measurementId: "G-S6Q5V11RSQ"
 })
 
 const auth = firebase.auth();

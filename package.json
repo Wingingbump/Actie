@@ -9,8 +9,7 @@
     "firebase": "^7.20.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-firebase-hooks": "^2.2.0",
-    "react-scripts": "3.4.3"
+    "react-firebase-hooks": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,5 +31,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-scripts": "^5.0.1"
   }
 }
