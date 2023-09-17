@@ -1,6 +1,7 @@
 import { generateRound } from "./tmdb";
 import { getRoundData } from "./getRound";
 import * as xxhash from 'xxhash-wasm';
+import FuzzySet from "fuzzyset.js";
 
 /**
  * Enter Room data into database
@@ -39,10 +40,17 @@ export async function guessCheck(gameRoomsRef, roomID, guess) {
   console.log(gameRoomsRef.doc(roomID, "movieList"));
   const roomDoc = await gameRoomsRef.doc(roomID).get();
   const movieList = roomDoc.data().movieList;
+  const fuzzy = FuzzySet(guess);
+  let compare;
+  for (const element in movieList) {
+    compare = fuzzy.get(element)[0];
+    if (compare >= .8) {
+      return true;
+    }
+  }
+  return false;
 
   // Fuzzy equals the guess against all elements in the array
-  const fuzzyMatch = movieList.some(movie => fuzzyEquals(movie, guess));
-  return fuzzyMatch
 }
 
 
