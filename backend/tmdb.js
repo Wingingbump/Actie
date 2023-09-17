@@ -1,11 +1,8 @@
-
 const API_KEY = "api_key=3e0d8b639ceb3235c21d5934466bb62e"
 const BASE_URL = "http://api.themoviedb.org/3/"
 const EDIT_URL = "person/3/movie_credits&"
 const API_URL = BASE_URL + EDIT_URL + API_KEY;
-
 const IMAGE_URL = "https://image.tmdb.org/t/p/original"
-
 const dataArray = []
 
 /**
@@ -42,6 +39,7 @@ function movieOnly(item) {
 
 /**
  * Filters for Adult, English, 
+ * 
  * @param {*} item movieDataJson
  * @returns true if is adult film
  */
@@ -83,15 +81,15 @@ async function generateRound() {
 
   // Get Actor Image
   const actor1Id = dData[actor1Data].id
-  
   const actor1Image = await fetch("https://api.themoviedb.org/3/person/" + actor1Id + "/images?language=en-US&" + API_KEY)
   const actor1ImageJson = await actor1Image.json()
-
   const actor1ImageArray = actor1ImageJson.profiles
+  // Load all images into an array
   const actor1ImageListArray = []
   for (const image of actor1ImageArray) {
     actor1ImageListArray.push(IMAGE_URL + image.file_path)
   }
+
   // Get movie Cast list data
   const movieCredits = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '/credits?language=en-US&' + API_KEY)
   // Get Json
@@ -118,41 +116,35 @@ async function generateRound() {
   // Get actor2 image
   const actor2Image = await fetch("https://api.themoviedb.org/3/person/" + actor2Id + "/images?language=en-US&" + API_KEY)
   const actor2ImageJson = await actor2Image.json()
-
   const actor2ImageArray = actor2ImageJson.profiles
+  // Load all images into an array
   const actor2ImageListArray = []
   for (const image of actor2ImageArray) {
     actor2ImageListArray.push(IMAGE_URL + image.file_path)
   }
 
-
-
   // Movie Matching
   const movieList1 = await fetch("https://api.themoviedb.org/3/person/" + actor1Id + "/movie_credits?language=en-US&" + API_KEY)
-  
   const movieList1Json = await movieList1.json();
-
   const movieCast1 = movieList1Json.cast
-
   const movieListArray1 = []
   for (const movie of movieCast1) {
     movieListArray1.push(movie.original_title)
   }
 
+  // Get list of movies for actor 2
   const movieList2 = await fetch('https://api.themoviedb.org/3/person/' + actor2Id + '/movie_credits' + "?language=en-US&" + API_KEY)
   const movieList2Json = await movieList2.json();
-
   const movieCast2 = movieList2Json.cast
-
+  // Insert actor's 2 movies into an array
   const movieListArray2 = []
   for (const movie of movieCast2) {
     movieListArray2.push(movie.original_title)
   }
   
+  // Create an array with both actor's like movies
   const moviesShared = []
-
   const movieSet1 = new Set(movieListArray1)
-
   for (const element of movieListArray2)
   {
     if(movieSet1.has(element))
@@ -161,11 +153,14 @@ async function generateRound() {
     }
   }
 
+  // Create a round object and add to the dataArray
   const roundData = new Round(actor1Name, actor1ImageListArray[0], actor2Name, actor2ImageListArray[0], moviesShared)
   dataArray.push(roundData)
-
-
 }
+
+/**
+ * Main will give the output of data array modify as needed
+ */
 async function main() {
   await generateRound();
   console.log(dataArray);
