@@ -41,17 +41,13 @@ export async function guessCheck(gameRoomsRef, roomID, guess) {
   console.log(gameRoomsRef.doc(roomID, "movieList"));
   const roomDoc = await gameRoomsRef.doc(roomID).get();
   const movieList = roomDoc.data().movieList;
-  const fuzzy = FuzzySet(guess);
-  let compare;
   for (const element in movieList) {
-    compare = fuzzy.get(element)[0];
-    if (compare >= .8) {
+    if (guess == element) {
       return true;
     }
   }
   return false;
 
-  // Fuzzy equals the guess against all elements in the array
 }
 
 

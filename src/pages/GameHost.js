@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 // import { guessCheck } from '../helpers/database';
 
 import { LevelContext, firestore } from '../App';
-import 'firebase/firestore'; 
+import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/analytics';
 
@@ -34,6 +34,19 @@ export function GameHost({ user }) {
       console.log(doc.data().actor1Name);
       console.log(doc.data().actor2Name);
     })
+
+    // host timer
+    var timeLeft = 30;
+    var timerId = setInterval(countdown, 1000);
+    function countdown() {
+      if (timeLeft == -1) {
+        clearTimeout(timerId);
+        console.log("boox")
+      } 
+      else {
+        timeLeft--;
+      }
+    }
   }
 
   useEffect(() => {

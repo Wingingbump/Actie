@@ -2,6 +2,7 @@ import { firestore } from '../App';
 import { useEffect, useState } from "react";
 import { createRoom } from "../helpers/database";
 import { useParams, useNavigate } from 'react-router-dom';
+import React from 'react';
 
 export function WaitingRoom({ user }) {
   const gameRoomsRef = firestore.collection('gameRooms');

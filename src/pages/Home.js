@@ -3,6 +3,8 @@ import { firestore } from '../App';
 import { useEffect } from "react";
 import { addUser } from "../helpers/database";
 import { createRoom } from "../helpers/database";
+import React from 'react';
+
 
 export function Home({ user }) {
   const gameRoomsRef = firestore.collection('gameRooms');

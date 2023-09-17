@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { generateRound } from '../helpers/tmdb';
 import { useEffect } from 'react';
 import { createRoom, addUser, watchRoom } from '../helpers/database';
+import React from 'react';
+
 // import { guessCheck } from '../helpers/database';
 
 import { LevelContext, firestore } from '../App';
