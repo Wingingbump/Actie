@@ -44,15 +44,13 @@ function movieOnly(item) {
  * @returns true if is adult film
  */
 function filter(item) {
-  adult =  (item.adult)
+  let adult =  (item.adult)
+  let english = false;
   if (item.original_language == "en")
   {
     english = true
   }
-  else
-  {
-    english = false
-  }
+
   return (!adult && english)
 }
 
@@ -89,6 +87,9 @@ async function generateRound() {
   for (const image of actor1ImageArray) {
     actor1ImageListArray.push(IMAGE_URL + image.file_path)
   }
+  if (actor1ImageListArray.length == 0) {
+    actor1ImageListArray.push("https://static.wikia.nocookie.net/mycun-the-movie/images/c/c9/Bob_%28Despicable_Me%29.png/revision/latest?cb=20230509144510")
+  }
 
   // Get movie Cast list data
   const movieCredits = await fetch('https://api.themoviedb.org/3/movie/' + movieID + '/credits?language=en-US&' + API_KEY)
@@ -121,6 +122,9 @@ async function generateRound() {
   const actor2ImageListArray = []
   for (const image of actor2ImageArray) {
     actor2ImageListArray.push(IMAGE_URL + image.file_path)
+  }
+  if (actor2ImageListArray.length == 0) {
+    actor2ImageListArray.push("https://static.wikia.nocookie.net/mycun-the-movie/images/c/c9/Bob_%28Despicable_Me%29.png/revision/latest?cb=20230509144510")
   }
 
   // Movie Matching
@@ -161,12 +165,10 @@ async function generateRound() {
 /**
  * Main will give the output of data array modify as needed
  */
-async function main() {
+export async function getRoundData() {
   await generateRound();
   return dataArray[dataArray.length - 1];
 }
-
-main();
 
 
 

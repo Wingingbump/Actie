@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, createContext } from 'react';
 import './App.css';
 import { generateRound } from './helpers/tmdb';
 import { useEffect } from 'react';
@@ -43,11 +43,15 @@ function App() {
       <Router>
         <Routes>
           <Route path="/home" element={<Home />} />
-          <Route path="/host" element={<GameHost />} />
+          <Route path="/host" element={<GameHost
+            user={user}
+          />} />
           <Route path="/player" element={<GamePlayer />} />
         </Routes>
         <section>
-          {user ? <Home /> : <SignIn />}
+          {user ? <Home
+            user={user} 
+           /> : <SignIn />}
         </section>
       </Router>
 
@@ -120,3 +124,4 @@ function SignOut() {
 
 export default App;
 export { firestore };
+export const LevelContext = createContext("thevidukoditu");

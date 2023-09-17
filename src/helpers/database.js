@@ -1,33 +1,54 @@
 import { generateRound } from "./tmdb";
+import { getRoundData } from "./getRound";
 import * as xxhash from 'xxhash-wasm';
 
+/**
+ * Enter Room data into database
+ */
 export async function createRoom(gameRoomsRef) {
   const xxhashAPI = await xxhash.default();
   const timeNow = new Date().toISOString();
   const roomID = xxhashAPI.h64ToString(timeNow);
   
-  const [actor1Name, actor2Name, movie] = await generateRound();
+  const roundData = await getRoundData();
 
   gameRoomsRef.doc(roomID).set({
-    actor1Name: actor1Name,
-    actor2Name: actor2Name,
-    movies: [movie]
+    actor1Name: roundData.actor1Name,
+    actor2Name: roundData.actor2Name,
+    actor1Image: roundData.actor1Image,
+    actor2Image: roundData.actor2Image,
+    movieList: roundData.movieList
   });
 
   return roomID;
 }
 
-export async function addUser(usersRef, auth){
-    if (auth.currentUser) {
-      await usersRef.add({
-        displayName: auth.currentUser.displayName,
-        id: auth.currentUser.email,
-        points: 0,
-        host: false
-      })
-      console.log(usersRef.doc("poopy"));
-      console.log(usersRef.doc.name);
-  }
+// export async function guessCheck(gameRoomsRef, roomID, guess) {
+//   get the current movieList
+//   console.log(gameRoomsRef.doc(roomID, "movieList"));
+//   const roomDoc = await gameRoomsRef.doc(roomID).get();
+//   const movieList = roomDoc.data().movieList;
+
+//  Fuzzy equals the guess against all elements in the array
+//  const fuzzyMatch = movieList.some(movie => fuzzyEquals(movie, guess));
+// }
+
+
+/**
+ * add users to the room in the database
+ */
+export async function addUser(usersRef, user){
+  // xxhash is deterministic
+  const xxhashAPI = await xxhash.default();
+  const userdbID = xxhashAPI.h64ToString(user.email);
+  await usersRef.doc(userdbID).set({
+    displayName: user.displayName,
+    id: user.email,
+    points: 0,
+    host: true
+  })
+  console.log(usersRef.doc.name);
+  
 }
 
 // export function watchRoom(gameRoomsRef, roomID) {
