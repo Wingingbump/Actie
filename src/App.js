@@ -3,6 +3,10 @@ import './App.css';
 import { generateRound } from './helpers/tmdb';
 import { useEffect } from 'react';
 import { createRoom, addUser, watchRoom } from './helpers/database';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { GameHost } from './pages/GameHost';
+import { GamePlayer } from './pages/GamePlayer';
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -36,10 +40,16 @@ function App() {
         <h1></h1>
         <SignOut />
       </header>
-
-      <section>
-        {user ? <ChatRoom /> : <SignIn />}
-      </section>
+      <Router>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/host" element={<GameHost />} />
+          <Route path="/player" element={<GamePlayer />} />
+        </Routes>
+        <section>
+          {user ? <Home /> : <SignIn />}
+        </section>
+      </Router>
 
     </div>
   );
@@ -70,84 +80,43 @@ function SignOut() {
 
 
 
-function ChatRoom() {
-  const dummy = useRef();
-  const messagesRef = firestore.collection('messages');
-  const gameRoomsRef = firestore.collection('gameRooms');
-  const usersRef = firestore.collection('users')
-  const query = messagesRef.orderBy('createdAt').limit(25);
-  const gameRoomID = useRef("initial");
-  const gameData = useRef();
+// function ChatRoom() {
+//   const dummy = useRef();
+//   const gameRoomsRef = firestore.collection('gameRooms');
+//   const usersRef = firestore.collection('users')
+//   const gameRoomID = useRef("initial");
+//   const gameData = useRef();
 
-  const [messages] = useCollectionData(query, { idField: 'id' });
+//   const [formValue, setFormValue] = useState('');
 
-  const [formValue, setFormValue] = useState('');
+//   const startGame = async (e) => {
+//     e.preventDefault();
 
-  const startGame = async (e) => {
-    e.preventDefault();
+//     const roomID = await createRoom(gameRoomsRef);
+//     gameRoomID.current = roomID;
+//     console.log(gameRoomID.current);
+//     gameRoomsRef.doc(roomID).onSnapshot((doc) => {
+//       console.log("current data: " + doc.data())
+//       gameData.current = doc.data();
+//       console.log(doc.data().movies);
+//     })
+//   }
 
-    const roomID = await createRoom(gameRoomsRef);
-    gameRoomID.current = roomID;
-    console.log(gameRoomID.current);
-    gameRoomsRef.doc(roomID).onSnapshot((doc) => {
-      console.log("current data: " + doc.data())
-      gameData.current = doc.data();
-    })
-  }
+//   useEffect(async () => {
+//     console.log("Bouta get da document");
+//     await addUser(usersRef, auth);
+//   }, [])
 
-  useEffect(async () => {
-    console.log("Bouta get da document");
-    await addUser(usersRef, auth);
-  }, [])
+//   return (<>
+//     <form>
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
+//       <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type Here" />
 
-    const { uid, photoURL } = auth.currentUser;
-
-    await messagesRef.add({
-      text: formValue,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      uid,
-      photoURL
-    })
-
-    setFormValue('');
-    dummy.current.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  return (<>
-    <main>
-
-      {messages && messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
-
-      <span ref={dummy}></span>
-
-    </main>
-
-    <form onSubmit={sendMessage}>
-
-      <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type Here" />
-
-      <button type="submit" disabled={!formValue}>Send</button>
-      <button onClick={startGame}>start game</button>
-    </form>
-  </>)
-}
-
-
-function ChatMessage(props) {
-  const { text, uid, photoURL } = props.message;
-
-  const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
-
-  return (<>
-    <div className={`message ${messageClass}`}>
-      <img src={photoURL || 'https://api.adorable.io/avatars/23/abott@adorable.png'} />
-      <p>{text}</p>
-    </div>
-  </>)
-}
-
+//       <button type="submit" disabled={!formValue}>Send</button>
+//       <button onClick={startGame}>start game</button>
+//     </form>
+//   </>)
+// }
 
 export default App;
+export { firestore };
