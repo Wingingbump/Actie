@@ -2,8 +2,10 @@ import { useNavigate } from "react-router-dom"
 import { firestore } from '../App';
 import { useEffect } from "react";
 import { addUser } from "../helpers/database";
+import { createRoom } from "../helpers/database";
 
 export function Home({ user }) {
+  const gameRoomsRef = firestore.collection('gameRooms');
   const usersRef = firestore.collection('users')
   const navigate = useNavigate();
 
@@ -15,12 +17,14 @@ export function Home({ user }) {
   }, [])
   
 
-  const createGame = () => {
-    navigate('/host')
+  const createGame = async () => {
+    const roomID = await createRoom(gameRoomsRef, user);
+
+    navigate(`waiting-room/${roomID}`);
     console.log("starting game")
   }
   const joinGame = () => {
-    navigate('/player')
+    navigate('/join')
     console.log('joining game')
   }
   return (

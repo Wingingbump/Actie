@@ -13,9 +13,10 @@ export function GamePlayer({ user }) {
 
   return (
     <>
+      <h1>Player</h1>
       <form>
 
-      <input placeholder="Type Here" />
+      <input placeholder="You are a player" />
 
       </form>
     </>

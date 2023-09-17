@@ -34,16 +34,16 @@ export async function createRoom(gameRoomsRef, user) {
 /**
  * Checks guess against the db
  */
-export async function guessCheck(gameRoomsRef, roomID, guess) {
-  // get the current movieList
-  console.log(gameRoomsRef.doc(roomID, "movieList"));
-  const roomDoc = await gameRoomsRef.doc(roomID).get();
-  const movieList = roomDoc.data().movieList;
+// export async function guessCheck(gameRoomsRef, roomID, guess) {
+//   // get the current movieList
+//   console.log(gameRoomsRef.doc(roomID, "movieList"));
+//   const roomDoc = await gameRoomsRef.doc(roomID).get();
+//   const movieList = roomDoc.data().movieList;
 
-  // Fuzzy equals the guess against all elements in the array
-  const fuzzyMatch = movieList.some(movie => fuzzyEquals(movie, guess));
-  return fuzzyMatch
-}
+//   // Fuzzy equals the guess against all elements in the array
+//   const fuzzyMatch = movieList.some(movie => fuzzyEquals(movie, guess));
+//   return fuzzyMatch
+// }
 
 
 /**
