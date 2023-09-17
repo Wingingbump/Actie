@@ -43,10 +43,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/home" element={<Home />} />
-          <Route path="/host" element={<GameHost
-            user={user}
-          />} />
-          <Route path="/player" element={<GamePlayer />} />
+          {user && <Route path="/host" element={<GameHost user={user}/>} />}
+          {user && <Route path="/player" element={<GamePlayer user={user}/>} />}
         </Routes>
         <section>
           {user ? <Home

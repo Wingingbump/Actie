@@ -16,17 +16,16 @@ export function GameHost({ user }) {
   const usersRef = firestore.collection('users')
   const gameRoomID = useRef("initial");
   const gameData = useRef();
-  const userData = useContext(LevelContext);
 
   const [formValue, setFormValue] = useState('');
 
   const startGame = async (e) => {
     e.preventDefault();
 
-    const roomID = await createRoom(gameRoomsRef);
+    const roomID = await createRoom(gameRoomsRef, user);
     gameRoomID.current = roomID;
     console.log(gameRoomID.current);
-    console.log(userData);
+    console.log(user.email);
     // await guessCheck(gameRoomsRef, gameRoomID.current);
 
     gameRoomsRef.doc(roomID).onSnapshot((doc) => {
@@ -42,8 +41,8 @@ export function GameHost({ user }) {
     // (async () => {
     //   const data = await gameRoomsRef.doc(gameRoomID.current).get();
     //   console.log(data.data)
-    // }) ();
-    console.log(user);
+    // }) (); c
+    console.log(user.email);
   })
 
   return (<>

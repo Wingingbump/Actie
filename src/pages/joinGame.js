@@ -1,4 +1,5 @@
 import React, { useRef, useState, useContext } from 'react';
+import { useNavigate } from "react-router-dom"
 import { generateRound } from '../helpers/tmdb';
 import { useEffect } from 'react';
 import { createRoom, addUser, watchRoom } from '../helpers/database';
@@ -9,14 +10,20 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/analytics';
 
-export function GamePlayer({ user }) {
+export function joinGame({ user }) {
+  const navigate = useNavigate();
+  
+  function goToRoom() {
+    navigate('/player');
+  }
 
   return (
     <>
       <form>
 
-      <input placeholder="Type Here" />
+      <input placeholder="Room ID" />
 
+      <button type="submit" disabled={!formValue}>Send</button>
       </form>
     </>
   );
