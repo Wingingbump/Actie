@@ -7,6 +7,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { GameHost } from './pages/GameHost';
 import { GamePlayer } from './pages/GamePlayer';
+import { JoinGameRoom } from './pages/JoinGameRoom';
+import { WaitingRoom } from './pages/WaitingRoom';
+
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -43,10 +46,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/home" element={<Home />} />
-          <Route path="/host" element={<GameHost
-            user={user}
-          />} />
-          <Route path="/player" element={<GamePlayer />} />
+          {user && <Route path="/host/:roomID" element={<GameHost user={user}/>} />}
+          {user && <Route path="/player/:roomID" element={<GamePlayer user={user}/>} />}
+          {user && <Route path="/join" element={<JoinGameRoom user={user}/>} />}
+          {user && <Route path="/waiting-room/:roomID" element={<WaitingRoom user={user}/>} />}
         </Routes>
         <section>
           {user ? <Home
@@ -69,7 +72,6 @@ function SignIn() {
   return (
     <>
       <button className="sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
-      <p>Do not violate the community guidelines or you will be banned for life!</p>
     </>
   )
 
@@ -124,4 +126,4 @@ function SignOut() {
 
 export default App;
 export { firestore };
-export const LevelContext = createContext("thevidukoditu");
+export const currentRoomID = createContext("");

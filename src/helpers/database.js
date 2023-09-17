@@ -6,7 +6,7 @@ import FuzzySet from "fuzzyset.js";
 /**
  * Enter Room data into database
  */
-export async function createRoom(gameRoomsRef) {
+export async function createRoom(gameRoomsRef, user) {
   const xxhashAPI = await xxhash.default();
   const timeNow = new Date().toISOString();
   const roomID = xxhashAPI.h64ToString(timeNow);
@@ -23,7 +23,15 @@ export async function createRoom(gameRoomsRef) {
     actor2Name: roundData.actor2Name,
     actor1Image: roundData.actor1Image,
     actor2Image: roundData.actor2Image,
-    movieList: roundData.movieList
+    movieList: roundData.movieList,
+    players: [
+      {
+        displayName: user.displayName,
+        id: user.email,
+        points: 0,
+        host: true
+      }
+    ]
   });
 
   return roomID;
@@ -32,6 +40,8 @@ export async function createRoom(gameRoomsRef) {
 /**
  * Checks guess against the db
  */
+
+
 export async function guessCheck(gameRoomsRef, roomID, guess) {
   // get the current movieList
   console.log(gameRoomsRef.doc(roomID, "movieList"));
@@ -49,6 +59,7 @@ export async function guessCheck(gameRoomsRef, roomID, guess) {
 
   // Fuzzy equals the guess against all elements in the array
 }
+
 
 
 /**
