@@ -1,6 +1,7 @@
 import { generateRound } from "./tmdb";
 import { getRoundData } from "./getRound";
 import * as xxhash from 'xxhash-wasm';
+import FuzzySet from "fuzzyset.js";
 
 /**
  * Enter Room data into database
@@ -11,7 +12,12 @@ export async function createRoom(gameRoomsRef, user) {
   const roomID = xxhashAPI.h64ToString(timeNow);
   
   const roundData = await getRoundData();
+  const currentTime = new Date();
+  const hours = currentTime.getHours();
+  const minutes = currentTime.getMinutes();
+  const seconds = currentTime.getSeconds();
 
+  console.log(`Current time: ${hours}:${minutes}:${seconds}`);
   gameRoomsRef.doc(roomID).set({
     actor1Name: roundData.actor1Name,
     actor2Name: roundData.actor2Name,
@@ -34,16 +40,26 @@ export async function createRoom(gameRoomsRef, user) {
 /**
  * Checks guess against the db
  */
-// export async function guessCheck(gameRoomsRef, roomID, guess) {
-//   // get the current movieList
-//   console.log(gameRoomsRef.doc(roomID, "movieList"));
-//   const roomDoc = await gameRoomsRef.doc(roomID).get();
-//   const movieList = roomDoc.data().movieList;
 
-//   // Fuzzy equals the guess against all elements in the array
-//   const fuzzyMatch = movieList.some(movie => fuzzyEquals(movie, guess));
-//   return fuzzyMatch
-// }
+
+export async function guessCheck(gameRoomsRef, roomID, guess) {
+  // get the current movieList
+  console.log(gameRoomsRef.doc(roomID, "movieList"));
+  const roomDoc = await gameRoomsRef.doc(roomID).get();
+  const movieList = roomDoc.data().movieList;
+  const fuzzy = FuzzySet(guess);
+  let compare;
+  for (const element in movieList) {
+    compare = fuzzy.get(element)[0];
+    if (compare >= .8) {
+      return true;
+    }
+  }
+  return false;
+
+  // Fuzzy equals the guess against all elements in the array
+}
+
 
 
 /**

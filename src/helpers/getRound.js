@@ -111,7 +111,13 @@ async function generateRound() {
 
   // Get other actor
   const otherActor = cast[Math.floor(Math.random() * 3)];
-  const actor2Name = otherActor.name
+  const actor2Name = otherActor.name //THIS LINE RUNS INTO ERROR EVERY 1/50 
+  //   getRound.js:114 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'name')
+  //   at generateRound (getRound.js:114:1)
+  //   at async getRoundData (getRound.js:169:1)
+  //   at async createRoom (database.js:13:1)
+  //   at async startGame (GameHost.js:26:1)
+
   const actor2Id = otherActor.id
 
   // Get actor2 image
