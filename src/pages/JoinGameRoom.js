@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import { generateRound } from '../helpers/tmdb';
 import { useEffect } from 'react';
@@ -10,18 +10,19 @@ import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/analytics';
 
-export function joinGame({ user }) {
+export function JoinGameRoom({ user }) {
+  const [formValue, setFormValue] = useState("");
   const navigate = useNavigate();
   
   function goToRoom() {
-    navigate('/player');
+    navigate(`/waiting-room/${formValue}`);
   }
 
   return (
     <>
-      <form>
+      <form onSubmit={goToRoom}>
 
-      <input placeholder="Room ID" />
+      <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Room ID" />
 
       <button type="submit" disabled={!formValue}>Send</button>
       </form>
