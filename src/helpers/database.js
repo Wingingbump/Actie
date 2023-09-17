@@ -25,8 +25,7 @@ export async function createRoom(gameRoomsRef, user) {
         points: 0,
         host: true
       }
-    ],
-    gameStart: false
+    ]
   });
 
   return roomID;
@@ -35,8 +34,6 @@ export async function createRoom(gameRoomsRef, user) {
 /**
  * Checks guess against the db
  */
-
-
 export async function guessCheck(gameRoomsRef, roomID, guess) {
   // get the current movieList
   console.log(gameRoomsRef.doc(roomID, "movieList"));
