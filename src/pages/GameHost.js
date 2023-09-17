@@ -28,29 +28,14 @@ export function GameHost({ user }) {
     const roomID = params.roomID;
 
     gameRoomsRef.doc(roomID).onSnapshot((doc) => {
-      if (doc.exists) {
-        // Check if the document exists before accessing its data
-        console.log("current data: " + doc.data());
-    
-        const data = doc.data();
-        if (data) {
-          // Check if 'data' is defined before accessing its properties
-          gameData.current = data;
-          console.log(data.movieList);
-          console.log(data.actor1Name);
-          console.log(data.actor2Name);
-        } else {
-          console.error("Document data is undefined.");
-        }
-      } else {
-        console.error("Document does not exist.");
-      }
-    });
-    
-    
+      console.log("current data: " + doc.data())
+      gameData.current = doc.data();
+      console.log(doc.data().movieList);
+      console.log(doc.data().actor1Name);
+      console.log(doc.data().actor2Name);
+    })
   }
-  
-  
+
   useEffect(() => {
     // (async () => {
     //   const data = await gameRoomsRef.doc(gameRoomID.current).get();
@@ -58,7 +43,6 @@ export function GameHost({ user }) {
     // }) (); c
     console.log(user.email);
   })
-  
 
   return (<>
     <h1>Host</h1>

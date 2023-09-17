@@ -1,7 +1,6 @@
 import { generateRound } from "./tmdb";
 import { getRoundData } from "./getRound";
 import * as xxhash from 'xxhash-wasm';
-import FuzzySet from "fuzzyset.js";
 
 /**
  * Enter Room data into database
@@ -12,12 +11,7 @@ export async function createRoom(gameRoomsRef, user) {
   const roomID = xxhashAPI.h64ToString(timeNow);
   
   const roundData = await getRoundData();
-  const currentTime = new Date();
-  const hours = currentTime.getHours();
-  const minutes = currentTime.getMinutes();
-  const seconds = currentTime.getSeconds();
 
-  console.log(`Current time: ${hours}:${minutes}:${seconds}`);
   gameRoomsRef.doc(roomID).set({
     actor1Name: roundData.actor1Name,
     actor2Name: roundData.actor2Name,
