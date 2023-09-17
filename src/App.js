@@ -8,7 +8,7 @@ import { Home } from './pages/Home';
 import { GameHost } from './pages/GameHost';
 import { GamePlayer } from './pages/GamePlayer';
 import { JoinGameRoom } from './pages/JoinGameRoom';
-import { WaitingRoom } from './pages/WaitingRoom';
+// import { WaitingRoom } from './pages/WaitingRoom';
 
 
 import firebase from 'firebase/app';
@@ -49,7 +49,7 @@ function App() {
           {user && <Route path="/host/:roomID" element={<GameHost user={user}/>} />}
           {user && <Route path="/player/:roomID" element={<GamePlayer user={user}/>} />}
           {user && <Route path="/join" element={<JoinGameRoom user={user}/>} />}
-          {user && <Route path="/waiting-room/:roomID" element={<WaitingRoom user={user}/>} />}
+          {/* {user && <Route path="/waiting-room/:roomID" element={<WaitingRoom user={user}/>} />} */}
         </Routes>
         <section>
           {user ? <Home
