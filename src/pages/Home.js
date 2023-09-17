@@ -20,7 +20,7 @@ export function Home({ user }) {
   const createGame = async () => {
     const roomID = await createRoom(gameRoomsRef, user);
 
-    navigate(`waiting-room/${roomID}`);
+    navigate(`host/${roomID}`);
     console.log("starting game")
   }
   const joinGame = () => {

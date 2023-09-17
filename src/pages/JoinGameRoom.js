@@ -15,7 +15,7 @@ export function JoinGameRoom({ user }) {
   const navigate = useNavigate();
   
   function goToRoom() {
-    navigate(`/waiting-room/${formValue}`);
+    navigate(`/player/${formValue}`);
   }
 
   return (

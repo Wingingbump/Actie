@@ -31,7 +31,8 @@ export async function createRoom(gameRoomsRef, user) {
         points: 0,
         host: true
       }
-    ]
+    ],
+    gameStart: false
   });
 
   return roomID;
